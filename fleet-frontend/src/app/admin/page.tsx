@@ -1,22 +1,23 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '../context/AuthContext';
-import ProtectedRoute from '../components/ProtectedRoute';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../context/AuthContext";
+import ProtectedRoute from "../components/ProtectedRoute";
 
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectTrigger, SelectItem, SelectValue, SelectContent } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+  Select,
+  SelectTrigger,
+  SelectItem,
+  SelectValue,
+  SelectContent,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 type Job = {
   id: string;
@@ -36,19 +37,19 @@ function AdminDashboardContent() {
   const { user, token, logout } = useAuth();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [drivers, setDrivers] = useState<Driver[]>([]);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [assignedTo, setAssignedTo] = useState<string>('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [assignedTo, setAssignedTo] = useState<string>("");
 
   const router = useRouter();
 
   const handleLogout = () => {
     logout();
-    router.push('/');
+    router.push("/");
   };
 
   const fetchJobs = async () => {
-    const res = await fetch('http://localhost:3000/jobs', {
+    const res = await fetch("http://localhost:3000/jobs", {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
@@ -56,7 +57,7 @@ function AdminDashboardContent() {
   };
 
   const fetchDrivers = async () => {
-    const res = await fetch('http://localhost:3000/users/drivers', {
+    const res = await fetch("http://localhost:3000/users/drivers", {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
@@ -64,29 +65,29 @@ function AdminDashboardContent() {
   };
 
   const createJob = async () => {
-    const res = await fetch('http://localhost:3000/jobs', {
-      method: 'POST',
+    const res = await fetch("http://localhost:3000/jobs", {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         title,
         description,
-        assignedTo: assignedTo === 'unassigned' ? undefined : assignedTo,
+        assignedTo: assignedTo === "unassigned" ? undefined : assignedTo,
       }),
     });
 
     if (res.ok) {
-      setTitle('');
-      setDescription('');
-      setAssignedTo('');
+      setTitle("");
+      setDescription("");
+      setAssignedTo("");
       fetchJobs();
     }
   };
 
   useEffect(() => {
-    if (user?.role === 'ADMIN') {
+    if (user?.role === "ADMIN") {
       fetchJobs();
       fetchDrivers();
     }
@@ -124,7 +125,7 @@ function AdminDashboardContent() {
               <SelectValue placeholder="Assign a driver (optional)" />
             </SelectTrigger>
             <SelectContent>
-            <SelectItem value="unassigned">Unassigned</SelectItem>
+              <SelectItem value="unassigned">Unassigned</SelectItem>
               {drivers.map((driver) => (
                 <SelectItem key={driver.id} value={driver.id}>
                   {driver.name} ({driver.email})
@@ -144,12 +145,14 @@ function AdminDashboardContent() {
           <Card key={job.id}>
             <CardContent className="py-4 space-y-1">
               <div className="font-medium">{job.title}</div>
-              <div className="text-sm text-muted-foreground">{job.description}</div>
+              <div className="text-sm text-muted-foreground">
+                {job.description}
+              </div>
               <Badge variant="outline">Status: {job.status}</Badge>
               <div className="text-sm">
-                Assigned To:{' '}
+                Assigned To:{" "}
                 <span className="font-medium">
-                  {job.assignedTo?.name ?? 'Unassigned'}
+                  {job.assignedTo?.name ?? "Unassigned"}
                 </span>
               </div>
             </CardContent>

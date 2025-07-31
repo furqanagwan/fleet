@@ -8,7 +8,12 @@ export class AuthController {
   @Post('register')
   register(
     @Body()
-    body: { name: string; email: string; password: string; role?: 'ADMIN' | 'DRIVER' },
+    body: {
+      name: string;
+      email: string;
+      password: string;
+      role?: 'ADMIN' | 'DRIVER';
+    },
   ) {
     return this.authService.register(body);
   }

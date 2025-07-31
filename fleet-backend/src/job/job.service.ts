@@ -10,13 +10,16 @@ export class JobService {
     user: { id: string; role: Role },
     data: { title: string; description: string; assignedTo?: string },
   ) {
-    if (user.role !== 'ADMIN') throw new ForbiddenException('Only admins can create jobs');
+    if (user.role !== 'ADMIN')
+      throw new ForbiddenException('Only admins can create jobs');
 
     return prisma.job.create({
       data: {
         title: data.title,
         description: data.description,
-        assignedTo: data.assignedTo ? { connect: { id: data.assignedTo } } : undefined,
+        assignedTo: data.assignedTo
+          ? { connect: { id: data.assignedTo } }
+          : undefined,
       },
     });
   }
@@ -37,7 +40,11 @@ export class JobService {
     }
   }
 
-  async updateStatus(jobId: string, user: { id: string; role: Role }, status: JobStatus) {
+  async updateStatus(
+    jobId: string,
+    user: { id: string; role: Role },
+    status: JobStatus,
+  ) {
     const job = await prisma.job.findUnique({ where: { id: jobId } });
     if (!job || job.userId !== user.id) {
       throw new ForbiddenException('Not allowed to update this job');

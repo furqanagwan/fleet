@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useAuth } from '@/app/context/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useAuth } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function ProtectedRoute({
   children,
   requireRole,
 }: {
   children: React.ReactNode;
-  requireRole?: 'ADMIN' | 'DRIVER';
+  requireRole?: "ADMIN" | "DRIVER";
 }) {
   const { user } = useAuth();
   const router = useRouter();
@@ -17,9 +17,9 @@ export default function ProtectedRoute({
 
   useEffect(() => {
     if (!user) {
-      router.replace('/');
+      router.replace("/");
     } else if (requireRole && user.role !== requireRole) {
-      router.replace('/');
+      router.replace("/");
     } else {
       setLoading(false);
     }

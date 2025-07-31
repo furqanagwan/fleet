@@ -9,8 +9,15 @@ const prisma = new PrismaClient();
 export class AuthService {
   constructor(private jwtService: JwtService) {}
 
-  async register(data: { name: string; email: string; password: string; role?: 'ADMIN' | 'DRIVER' }) {
-    const existingUser = await prisma.user.findUnique({ where: { email: data.email } });
+  async register(data: {
+    name: string;
+    email: string;
+    password: string;
+    role?: 'ADMIN' | 'DRIVER';
+  }) {
+    const existingUser = await prisma.user.findUnique({
+      where: { email: data.email },
+    });
     if (existingUser) throw new UnauthorizedException('Email already in use');
 
     const hashed = await bcrypt.hash(data.password, 10);
@@ -38,6 +45,14 @@ export class AuthService {
   private createToken(user: any) {
     const payload = { sub: user.id, email: user.email, role: user.role };
     const token = this.jwtService.sign(payload);
-    return { access_token: token, user };
+    return {
+      access_token: token,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        mustUpdatePassword: user.mustUpdatePassword,
+      },
+    };
   }
 }

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 type Job = {
   id: string;
@@ -18,7 +18,7 @@ export default function DriverDashboard() {
   const [jobs, setJobs] = useState<Job[]>([]);
 
   const fetchJobs = async () => {
-    const res = await fetch('http://localhost:3000/jobs', {
+    const res = await fetch("http://localhost:3000/jobs", {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
@@ -27,9 +27,9 @@ export default function DriverDashboard() {
 
   const updateStatus = async (jobId: string, status: string) => {
     await fetch(`http://localhost:3000/jobs/${jobId}/status`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ status }),
@@ -38,7 +38,7 @@ export default function DriverDashboard() {
   };
 
   useEffect(() => {
-    if (user?.role === 'DRIVER') {
+    if (user?.role === "DRIVER") {
       fetchJobs();
     }
   }, [user]);
@@ -62,24 +62,27 @@ export default function DriverDashboard() {
             <CardContent className="space-y-3">
               <Badge
                 variant={
-                  job.status === 'PENDING'
-                    ? 'secondary'
-                    : job.status === 'ACCEPTED'
-                    ? 'default'
-                    : 'success'
+                  job.status === "PENDING"
+                    ? "secondary"
+                    : job.status === "ACCEPTED"
+                      ? "default"
+                      : "success"
                 }
               >
                 Status: {job.status}
               </Badge>
 
-              {job.status === 'PENDING' && (
-                <Button onClick={() => updateStatus(job.id, 'ACCEPTED')}>
+              {job.status === "PENDING" && (
+                <Button onClick={() => updateStatus(job.id, "ACCEPTED")}>
                   Accept Job
                 </Button>
               )}
 
-              {job.status === 'ACCEPTED' && (
-                <Button variant="success" onClick={() => updateStatus(job.id, 'COMPLETED')}>
+              {job.status === "ACCEPTED" && (
+                <Button
+                  variant="success"
+                  onClick={() => updateStatus(job.id, "COMPLETED")}
+                >
                   Mark as Completed
                 </Button>
               )}
